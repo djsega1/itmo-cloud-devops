@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.env
+.DS_Store
+*.git
+README.md
+images/

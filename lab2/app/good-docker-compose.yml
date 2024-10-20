@@ -1,0 +1,24 @@
+services:
+  bad-container:
+    container_name: bad
+    build:
+      dockerfile: BadDockerfile
+  good-container:
+    container_name: good
+    build:
+      dockerfile: GoodDockerfile
+    secrets:
+      - supersecret
+    ports:
+      - "8000:8000"
+    depends_on:
+      - bad-container
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "128M"
+
+secrets:
+  supersecret:
+    file: ./supersecret
