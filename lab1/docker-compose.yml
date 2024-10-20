@@ -1,0 +1,39 @@
+services:
+  service_template-container:
+    container_name: backend
+    image: ghcr.io/userver-framework/ubuntu-22.04-userver-pg:latest
+    privileged: true
+    environment:
+      - PREFIX=${PREFIX:-~/.local}
+      - CCACHE_DIR=/service_template/.ccache
+      - CORES_DIR=/cores
+    volumes:
+      - .:/service_template:rw
+    working_dir: /service_template
+    entrypoint:
+      - ./tests/run_as_user.sh
+    command: ["make", "--", "--in-docker-start-release"]
+    networks:
+      - new
+  nginx-container:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      TZ: "Europe/Moscow"
+    depends_on:
+      - service_template-container
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./nginx/static:/var/www/static
+    networks:
+      - new
+  
+networks:
+  new:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
