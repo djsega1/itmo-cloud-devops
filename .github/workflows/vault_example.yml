@@ -35,7 +35,7 @@ jobs:
         with:
           url: https://close-peacock-monthly.ngrok-free.app:80
           token: ${{ secrets.VAULT_TOKEN }}
-          tlsSkipVerify: true
+          # tlsSkipVerify: true
           secrets: |
             secret/data/ci SECRET_KEY
 
