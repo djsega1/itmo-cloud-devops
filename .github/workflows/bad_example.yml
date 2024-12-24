@@ -24,9 +24,15 @@ jobs:
           pip install requests
 
       - name: Run app
+        env:
+          FLASK_ENV: production
+          SECRET_KEY: "42"
         run: python app.py &
 
       - name: Run tests
+        env:
+          FLASK_ENV: production
+          SECRET_KEY: "42"
         run: pytest test_app.py
 
   deploy:
