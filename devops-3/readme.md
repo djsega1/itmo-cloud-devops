@@ -1,3 +1,5 @@
+CI заключается в тесте, что сервер отдает переменную окружения `SECRET_KEY=42`.
+
 ## "Плохой" CI/CD файл
 
 ```
@@ -221,9 +223,15 @@ ngrok http --url=close-peacock-monthly.ngrok-free.app 8200
   - name: Import secrets
     uses: hashicorp/vault-action@v2
     with:
-      url: https://close-peacock-monthly.ngrok-free.app:8200
+      url: http://close-peacock-monthly.ngrok-free.app:80
       token: ${{ secrets.VAULT_TOKEN }}
       tlsSkipVerify: true
       secrets: |
         secret/data/ci SECRET_KEY
 ```
+
+Запускаем:
+
+![image](https://github.com/user-attachments/assets/58f85460-c80d-4503-95c2-50f201b34bc3)
+
+Вспоминаем тест и понимаем, что секреты подтягиваются и не светятся в логах.
