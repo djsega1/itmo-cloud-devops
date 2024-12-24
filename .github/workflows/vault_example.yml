@@ -1,4 +1,4 @@
-name: Flask App Test Workflow (Good Practices)
+name: Flask App Test Workflow (Vault)
 
 on:
   push:
