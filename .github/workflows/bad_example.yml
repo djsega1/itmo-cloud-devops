@@ -1,0 +1,43 @@
+name: Flask App Test (Bad Practices)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./devops-3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          pip install flask
+          pip install pytest
+          pip install requests
+
+      - name: Run app
+        run: python app.py
+
+      - name: Run tests
+        run: pytest test_app.py
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Push to server
+        run: echo "PUSHING TO SERVER"
+
+      - name: Run app
+        run: echo "RUNNING ON PROD"
