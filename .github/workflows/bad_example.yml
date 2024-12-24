@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./devops-3
+        working-directory: ./devops-3/app
 
     steps:
       - name: Checkout code
