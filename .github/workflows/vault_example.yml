@@ -1,0 +1,63 @@
+name: Flask App Test Workflow (Good Practices)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./devops-3/app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python3.12 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Import secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: https://close-peacock-monthly.ngrok-free.app:8200
+          token: ${{ secrets.VAULT_TOKEN }}
+          tlsSkipVerify: true
+          secrets: |
+            secret/data/ci SECRET_KEY
+
+      - name: Run app
+        run: |
+          source venv/bin/activate
+          python app.py &
+
+      - name: Run tests
+        run: |
+          source venv/bin/activate
+          pytest test_app.py
+
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Push to server
+        run: echo "PUSHING TO SERVER"
+
+      - name: Run app
+        run: echo "RUNNING ON PROD"
