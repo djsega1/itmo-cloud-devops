@@ -235,3 +235,5 @@ ngrok http --url=close-peacock-monthly.ngrok-free.app 8200
 ![image](https://github.com/user-attachments/assets/58f85460-c80d-4503-95c2-50f201b34bc3)
 
 Вспоминаем тест и понимаем, что секреты подтягиваются и не светятся в логах.
+
+![image](https://github.com/user-attachments/assets/2efc7fec-81ed-421f-84fb-91a27a1390c5)
