@@ -1,0 +1,74 @@
+name: Flask App Test Workflow (Good Practices)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./devops-3/app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python3.12 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+  test:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./devops-3/app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Enter venv
+        run: source venv/bin/activate
+
+      - name: Run app
+        env:
+          FLASK_ENV: production
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: python app.py &
+
+      - name: Run tests
+        env:
+          FLASK_ENV: production
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: pytest test_app.py
+
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Push to server
+        run: echo "PUSHING TO SERVER"
+
+      - name: Run app
+        run: echo "RUNNING ON PROD"

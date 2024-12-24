@@ -14,3 +14,4 @@ Testing/
 .DS_Store
 Makefile.local
 third_party
+*venv
