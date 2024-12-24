@@ -32,6 +32,7 @@ jobs:
 
   test:
     runs-on: ubuntu-22.04
+    needs: build
     defaults:
       run:
         working-directory: ./devops-3/app
