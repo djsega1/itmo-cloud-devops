@@ -158,3 +158,72 @@ jobs:
 ## Результаты
 
 На выходе имеем базовый безопасный и стабильный CI/CD файл для простенького проекта без заморочек.
+
+## Звездочка
+
+### Установка HashiCorp Vault
+
+Его забанили в России, так что пришлось делать так:
+
+```
+sudo snap install vault
+```
+
+```
+vault server -dev -dev-root-token-id root
+```
+
+![image](https://github.com/user-attachments/assets/37c18835-db70-4a06-a0a1-f39303432829)
+
+Добавляем переменные окружения для обращения к Vault и сам секрет
+
+```
+export VAULT_ADDR=http://127.0.0.1:8200
+export VAULT_TOKEN=root
+vault kv put secret/ci app_secret=SecretProvidedByVault
+```
+
+![image](https://github.com/user-attachments/assets/30447f50-0ecb-4a13-84e8-91e2b3dd7f23)
+
+Выдаем право на получение секрета
+```
+vault policy write ci-secret-reader - <<EOF
+path "secret/data/ci" {
+    capabilities = ["read"]
+}
+EOF
+```
+
+![image](https://github.com/user-attachments/assets/f0156b71-0b89-466b-9425-fc211b613a8b)
+
+Создаем токен для репозитория и пробуем получить с его помощью секрет
+
+```
+GITHUB_REPO_TOKEN=$(vault token create -policy=ci-secret-reader -format json | jq -r ".auth.client_token")
+VAULT_TOKEN=$GITHUB_REPO_TOKEN vault kv get secret/ci
+```
+![image](https://github.com/user-attachments/assets/d66200bb-982c-4423-92a5-825ba989173e)
+
+Добавляем токен в репозиторий
+![image](https://github.com/user-attachments/assets/047a16c8-f19f-46dd-a0dc-3fbd36f99de6)
+
+Поднимаем ngrok на порт 8200 с адресом https://close-peacock-monthly.ngrok-free.app
+```
+ngrok http --url=close-peacock-monthly.ngrok-free.app 8200
+```
+![image](https://github.com/user-attachments/assets/9c34275d-68ae-4a88-a81a-35daf40a2225)
+
+Теперь по этому адресу доступен наш Vault
+![image](https://github.com/user-attachments/assets/34d872e3-0df5-4356-b8b7-8a4730c52447)
+
+В "хороший" пайплайн добавляем коннект к Vault
+```
+  - name: Import secrets
+    uses: hashicorp/vault-action@v2
+    with:
+      url: https://close-peacock-monthly.ngrok-free.app:8200
+      token: ${{ secrets.VAULT_TOKEN }}
+      tlsSkipVerify: true
+      secrets: |
+        secret/data/ci SECRET_KEY
+```
