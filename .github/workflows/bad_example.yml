@@ -1,4 +1,4 @@
-name: Flask App Test (Bad Practices)
+name: Flask App Test Workflow (Bad Practices)
 
 on:
   push:
