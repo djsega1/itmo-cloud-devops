@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return f"{os.environ.get("SECRET_VAR", "Hello world!")}"
+    return f"{os.environ.get("SECRET_KEY", "Hello world!")}"
 
 
 if __name__ == "__main__":
