@@ -9,8 +9,9 @@ on:
       - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-22.04
+    needs: build
     defaults:
       run:
         working-directory: ./devops-3/app
@@ -29,25 +30,6 @@ jobs:
           python3.12 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-
-  test:
-    runs-on: ubuntu-22.04
-    needs: build
-    defaults:
-      run:
-        working-directory: ./devops-3/app
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      - name: Enter venv
-        run: source venv/bin/activate
 
       - name: Run app
         env:
