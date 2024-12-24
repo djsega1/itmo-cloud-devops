@@ -34,13 +34,17 @@ jobs:
         env:
           FLASK_ENV: production
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        run: python app.py &
+        run: |
+          source venv/bin/activate
+          python app.py &
 
       - name: Run tests
         env:
           FLASK_ENV: production
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        run: pytest test_app.py
+        run: |
+          source venv/bin/activate
+          pytest test_app.py
 
   deploy:
     runs-on: ubuntu-22.04
