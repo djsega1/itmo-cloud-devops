@@ -33,7 +33,7 @@ jobs:
       - name: Import secrets
         uses: hashicorp/vault-action@v2
         with:
-          url: https://close-peacock-monthly.ngrok-free.app:8200
+          url: https://close-peacock-monthly.ngrok-free.app:80
           token: ${{ secrets.VAULT_TOKEN }}
           tlsSkipVerify: true
           secrets: |
